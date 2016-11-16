@@ -3,7 +3,7 @@ $gtm4wp_product_counter = 0;
 
 function gtm4wp_woocommerce_addjs( $js ) {
   global $woocommerce;
-  
+
 	if ( version_compare( $woocommerce->version, "2.1", ">=" ) ) {
 		wc_enqueue_js( $js );
 	} else {
@@ -112,7 +112,7 @@ function gtm4wp_woocommerce_datalayer_filter_items( $dataLayer ) {
 				$dataLayer["ecomm_pagetype"] = "product";
 				$dataLayer["ecomm_totalvalue"] = (float)$product_price;
 			}
-			
+
 			if ( true === $gtm4wp_options[ GTM4WP_OPTION_INTEGRATE_WCTRACKENHANCEDEC ] ) {
 				$dataLayer["ecommerce"] = array(
 					"detail" => array(
@@ -133,7 +133,7 @@ function gtm4wp_woocommerce_datalayer_filter_items( $dataLayer ) {
 			var productdata = $( this )
 				.parent()
 				.find( '.gtm4wp_productdata' );
-			
+
 			". $gtm4wp_datalayer_name .".push({
 				'event': 'gtm4wp.removeFromCart',
 				'ecommerce': {
@@ -240,7 +240,7 @@ function gtm4wp_woocommerce_datalayer_filter_items( $dataLayer ) {
 								$out[] = $category->name;
 							}
 						}
-					
+
 						$_category = implode( " / ", $out );
 					}
 
@@ -260,7 +260,7 @@ function gtm4wp_woocommerce_datalayer_filter_items( $dataLayer ) {
 					  "currency" => get_woocommerce_currency(),
 					  "quantity" => $item['qty']
 					);
-			
+
 					$_sumprice += $_prodprice;
 					$_product_ids[] = $remarketing_id;
 				}
@@ -425,7 +425,7 @@ function gtm4wp_woocommerce_enhanced_ecom_product_click() {
 			if ( 0 == productdata.length ) {
 				return true;
 			}
-			
+
 			". $gtm4wp_datalayer_name .".push({
 				'event': 'gtm4wp.productClick',
 				'ecommerce': {
@@ -450,7 +450,7 @@ function gtm4wp_woocommerce_enhanced_ecom_product_click() {
 
 function gtm4wp_woocommerce_enhanced_ecom_add_prod_data() {
 	global $product, $gtm4wp_product_counter;
-	
+
 	$product_price = $product->get_price();
 	$_product_cats = get_the_terms($product->id, 'product_cat');
 	if ( ( is_array($_product_cats) ) && ( count( $_product_cats ) > 0 ) ) {
@@ -460,7 +460,7 @@ function gtm4wp_woocommerce_enhanced_ecom_add_prod_data() {
 		$product_cat = "";
 	}
 
-	echo '<span class="gtm4wp_productdata" data-product_id="' . $product->id . '" data-product_name="' . str_replace( '"', '&quot;', $product->get_title() ) . '" data-product_price="' .$product_price . '" data-product_cat="' . str_replace( '"', '&quot;', $product_cat ) . '" data-product_url="' . get_permalink() . '" data-product_listposition="' . $gtm4wp_product_counter . '"></span>';
+	echo '<span class="gtm4wp_productdata" data-product_id="' . $product->id . '" data-product_name="' . str_replace( '"', '&quot;', $product->get_title() ) . '" data-product_price="' .$product_price . '" data-product_cat="' . str_replace( '"', '&quot;', $product_cat ) . '" data-product_url="' . apply_filters( 'the_permalink', get_permalink() ) . '" data-product_listposition="' . $gtm4wp_product_counter . '"></span>';
 	$gtm4wp_product_counter++;
 }
 
@@ -475,7 +475,7 @@ function gtm4wp_woocommerce_cart_item_product_filter($product) {
 		$product_cat = "";
 	}
 
-	$GLOBALS["gtm4wp_cart_item_proddata"] = '<span class="gtm4wp_productdata" data-product_id="' . $product->id . '" data-product_name="' . str_replace( '"', '&quot;', $product->get_title() ) . '" data-product_price="' .$product_price . '" data-product_cat="' . str_replace( '"', '&quot;', $product_cat ) . '" data-product_url="' . get_permalink() . '"></span>';
+	$GLOBALS["gtm4wp_cart_item_proddata"] = '<span class="gtm4wp_productdata" data-product_id="' . $product->id . '" data-product_name="' . str_replace( '"', '&quot;', $product->get_title() ) . '" data-product_price="' .$product_price . '" data-product_cat="' . str_replace( '"', '&quot;', $product_cat ) . '" data-product_url="' . apply_filters( 'the_permalink', get_permalink() ) . '"></span>';
 	return $product;
 }
 
@@ -494,7 +494,7 @@ if ( isset ( $GLOBALS["woocommerce"] ) ) {
 
 	add_action( 'woocommerce_after_add_to_cart_button', "gtm4wp_woocommerce_single_add_to_cart_tracking" );
 	add_action( 'wp_footer', "gtm4wp_woocommerce_wp_footer" );
-	
+
 	if ( true === $gtm4wp_options[ GTM4WP_OPTION_INTEGRATE_WCTRACKENHANCEDEC ] ) {
 		add_action( 'wp_footer', 'gtm4wp_woocommerce_enhanced_ecom_product_click' );
 		add_action( 'woocommerce_before_shop_loop_item_title', 'gtm4wp_woocommerce_enhanced_ecom_add_prod_data' );
